@@ -1,22 +1,5 @@
-/* // /server.js
-const app = require("express")();
-var socket = require("socket.io");
-var path = require("path");
-
-// App setup
-app.set("port", process.env.PORT || 5000);
-app.listen(app.get("port"), () => {
-  console.log("listening to request on ", app.get("port"));
-});
-
-// Express only serves static assets in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-
-  app.get("*", (req, res) => {
-    res.sendFiel(path.join(__dirname, "client", "build", "index.html"));
-  });
-} */
+require('dotenv').config();
+connectDB = require('./db')
 
 const express = require("express");
 var socket = require("socket.io");
@@ -34,6 +17,10 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
+/*---- MONGODB CONNECTION ----*/
+connectDB();
+/*------------------*/
+
 // User data
 let users = [];
 
@@ -44,6 +31,7 @@ let connectCounter = 0;
 
 io.on("connection", socket => {
   console.log("made socket connection", socket.id);
+
 
   socket.on("enterRoom", function(room, isAdmin) {
     socket.join(room);
@@ -87,3 +75,4 @@ io.on("connection", socket => {
     io.emit("usersInRoom", usersInRoom);
   });
 });
+
